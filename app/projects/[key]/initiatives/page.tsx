@@ -9,8 +9,7 @@ import { Input } from "@/components/ui/input";
 import { ErrorBanner, ProjectNav } from "@/components/project-nav";
 import { INITIATIVE_STATUS_OPTIONS, initiativeProgress } from "@/lib/initiatives";
 import { formatIssueKey } from "@/lib/project-key";
-import { getOwnedProjectOr404, listProjects, loadBoard } from "@/lib/queries";
-import { createClient } from "@/utils/supabase/server";
+import { getOwnedProjectOr404, listProjects, loadBoard, requireUser } from "@/lib/queries";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
@@ -22,10 +21,7 @@ export default async function InitiativesPage({
   searchParams: Promise<{ error?: string }>;
 }) {
   const { key } = await params;
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { user } = await requireUser();
   if (!user) redirect("/sign-in");
   const [project, projects, sp] = await Promise.all([getOwnedProjectOr404(key), listProjects(), searchParams]);
   const board = await loadBoard(project.id);

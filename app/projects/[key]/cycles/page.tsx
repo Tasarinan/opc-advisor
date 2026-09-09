@@ -3,8 +3,7 @@ import { AppHeader } from "@/components/app-header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ErrorBanner, ProjectNav } from "@/components/project-nav";
-import { getOwnedProjectOr404, listProjects, loadBoard } from "@/lib/queries";
-import { createClient } from "@/utils/supabase/server";
+import { getOwnedProjectOr404, listProjects, loadBoard, requireUser } from "@/lib/queries";
 import { redirect } from "next/navigation";
 
 export default async function CyclesPage({
@@ -15,10 +14,7 @@ export default async function CyclesPage({
   searchParams: Promise<{ error?: string; complete?: string }>;
 }) {
   const { key } = await params;
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { user } = await requireUser();
   if (!user) redirect("/sign-in");
   const [project, projects, sp] = await Promise.all([getOwnedProjectOr404(key), listProjects(), searchParams]);
   const board = await loadBoard(project.id);

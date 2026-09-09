@@ -5,8 +5,7 @@ import { KanbanBoard } from "@/components/kanban-board";
 import { IssueFilterBar } from "@/components/issue-filter-bar";
 import { applyIssueFilters, parseIssueQuery, searchFromQuery } from "@/lib/saved-views";
 import { searchFromParams } from "@/lib/timeline-drag";
-import { getOwnedProjectOr404, listMembers, listProjects, loadBoard } from "@/lib/queries";
-import { createClient } from "@/utils/supabase/server";
+import { getOwnedProjectOr404, listMembers, listProjects, loadBoard, requireUser } from "@/lib/queries";
 import { redirect } from "next/navigation";
 
 export default async function KanbanPage({
@@ -24,10 +23,7 @@ export default async function KanbanPage({
   }>;
 }) {
   const { key } = await params;
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { user } = await requireUser();
   if (!user) redirect("/sign-in");
   const [project, projects, sp] = await Promise.all([
     getOwnedProjectOr404(key),

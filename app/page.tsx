@@ -1,14 +1,10 @@
 import Link from "next/link";
 import { AppHeader } from "@/components/app-header";
 import { Button } from "@/components/ui/button";
-import { createClient } from "@/utils/supabase/server";
-import { listProjects } from "@/lib/queries";
+import { listProjects, requireUser } from "@/lib/queries";
 
 export default async function HomePage() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { user } = await requireUser();
   const projects = user ? await listProjects() : [];
 
   return (

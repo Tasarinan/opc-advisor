@@ -6,8 +6,7 @@ import { TimelineBoard } from "@/components/timeline-board";
 import { applyIssueFilters, parseIssueQuery, searchFromQuery } from "@/lib/saved-views";
 import { expandTimelineRange, searchFromParams } from "@/lib/timeline-drag";
 import { timelineBucket, timelineRange } from "@/lib/view-filters";
-import { getOwnedProjectOr404, listMembers, listProjects, loadBoard } from "@/lib/queries";
-import { createClient } from "@/utils/supabase/server";
+import { getOwnedProjectOr404, listMembers, listProjects, loadBoard, requireUser } from "@/lib/queries";
 import { redirect } from "next/navigation";
 
 export default async function TimelinePage({
@@ -26,10 +25,7 @@ export default async function TimelinePage({
 }) {
   const { key } = await params;
   const sp = await searchParams;
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { user } = await requireUser();
   if (!user) redirect("/sign-in");
   const [project, projects] = await Promise.all([getOwnedProjectOr404(key), listProjects()]);
   const [board, members] = await Promise.all([loadBoard(project.id), listMembers(project.id)]);

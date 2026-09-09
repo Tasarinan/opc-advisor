@@ -1,5 +1,6 @@
 import { ErrorBanner } from "@/components/project-nav";
 import { IssueFieldsForm } from "@/components/issue-fields-form";
+import { IssuePanelClose } from "@/components/issue-panel-close";
 import { formatIssueKey } from "@/lib/project-key";
 import { loadIssueDetail, loadBoard, listMembers } from "@/lib/queries";
 import Link from "next/link";
@@ -29,9 +30,9 @@ export async function IssueSidePanel({
   const { issue, labelIds } = detail;
 
   return (
-    <div className="fixed inset-0 z-40 flex justify-end">
-      <Link href={closeHref} className="flex-1 bg-foreground/20" aria-label="关闭侧栏" />
-      <aside className="h-full w-full max-w-md overflow-y-auto bg-card p-5 shadow-[var(--shadow-soft)]">
+    <div className="fixed inset-0 z-50">
+      <IssuePanelClose href={closeHref} className="absolute inset-0 bg-foreground/20" aria-label="关闭侧栏" />
+      <aside className="relative z-10 ml-auto h-full w-full max-w-md overflow-y-auto bg-card p-5 shadow-[var(--shadow-soft)]">
         <div className="mb-3 flex items-start justify-between gap-2">
           <div>
             <p className="font-mono text-[11px] text-muted-foreground">{formatIssueKey(projectKey, issue.sequence_number)}</p>
@@ -41,9 +42,9 @@ export async function IssueSidePanel({
             <Link className="link-plain text-sm" href={`/projects/${projectKey}/issues/${issue.sequence_number}`}>
               完整页
             </Link>
-            <Link className="text-sm text-muted-foreground hover:text-foreground" href={closeHref}>
+            <IssuePanelClose href={closeHref} className="text-sm text-muted-foreground hover:text-foreground">
               关闭
-            </Link>
+            </IssuePanelClose>
           </div>
         </div>
         <ErrorBanner message={error} />

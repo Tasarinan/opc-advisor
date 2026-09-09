@@ -7,9 +7,8 @@ import { formatEstimate, formatPriority } from "@/lib/issue-meta";
 import { formatIssueKey } from "@/lib/project-key";
 import { applyIssueFilters, groupIssues, parseIssueQuery, searchFromQuery, type TableField } from "@/lib/saved-views";
 import { searchFromParams, withIssueQuery } from "@/lib/timeline-drag";
-import { getOwnedProjectOr404, listMembers, listProjects, loadBoard } from "@/lib/queries";
+import { getOwnedProjectOr404, listMembers, listProjects, loadBoard, requireUser } from "@/lib/queries";
 import type { IssueWithLabels } from "@/lib/types";
-import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
@@ -31,10 +30,7 @@ export default async function TablePage({
 }) {
   const { key } = await params;
   const sp = await searchParams;
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { user } = await requireUser();
   if (!user) redirect("/sign-in");
   const [project, projects] = await Promise.all([getOwnedProjectOr404(key), listProjects()]);
   const [board, members] = await Promise.all([loadBoard(project.id), listMembers(project.id)]);

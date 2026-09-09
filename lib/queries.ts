@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { createClient } from "@/utils/supabase/server";
 import { notFound } from "next/navigation";
 import type {
@@ -17,21 +18,21 @@ import type {
 } from "@/lib/types";
 import { checklistProgress } from "@/lib/checklist";
 
-export async function requireUser() {
+export const requireUser = cache(async () => {
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return { supabase, user: null };
   return { supabase, user };
-}
+});
 
-export async function getOwnedProject(key: string): Promise<Project | null> {
+export const getOwnedProject = cache(async (key: string): Promise<Project | null> => {
   const { supabase, user } = await requireUser();
   if (!user) return null;
   const { data } = await supabase.from("projects").select("*").eq("key", key).maybeSingle();
   return (data as Project | null) ?? null;
-}
+});
 
 export async function getOwnedProjectOr404(key: string): Promise<Project> {
   const project = await getOwnedProject(key);
@@ -39,14 +40,14 @@ export async function getOwnedProjectOr404(key: string): Promise<Project> {
   return project;
 }
 
-export async function listProjects(): Promise<Project[]> {
+export const listProjects = cache(async (): Promise<Project[]> => {
   const { supabase, user } = await requireUser();
   if (!user) return [];
   const { data } = await supabase.from("projects").select("*").order("created_at", { ascending: false });
   return (data ?? []) as Project[];
-}
+});
 
-export async function listMembers(projectId: number): Promise<ProjectMember[]> {
+export const listMembers = cache(async (projectId: number): Promise<ProjectMember[]> => {
   const supabase = await createClient();
   const { data } = await supabase
     .from("project_members")
@@ -54,7 +55,7 @@ export async function listMembers(projectId: number): Promise<ProjectMember[]> {
     .eq("project_id", projectId)
     .order("created_at");
   return (data ?? []) as ProjectMember[];
-}
+});
 
 export async function getMyRole(projectId: number): Promise<"owner" | "member" | null> {
   const { supabase, user } = await requireUser();
@@ -85,7 +86,7 @@ export async function getInviteByToken(token: string): Promise<ProjectInvite | n
   return (data as ProjectInvite | null) ?? null;
 }
 
-export async function loadBoard(projectId: number) {
+export const loadBoard = cache(async (projectId: number) => {
   const supabase = await createClient();
   const [{ data: columns, error: colErr }, { data: issues, error: issErr }, { data: labels }, { data: cycles }, { data: issueTypes }, { data: initiatives }] =
     await Promise.all([
@@ -144,7 +145,7 @@ export async function loadBoard(projectId: number) {
     issueTypes: (issueTypes ?? []) as IssueType[],
     initiatives: (initiatives ?? []) as Initiative[],
   };
-}
+});
 
 export async function loadIssueDetail(projectId: number, sequence: number) {
   const supabase = await createClient();
@@ -186,12 +187,12 @@ export async function loadIssueDetail(projectId: number, sequence: number) {
   };
 }
 
-export async function listSavedViews(projectId: number): Promise<SavedView[]> {
+export const listSavedViews = cache(async (projectId: number): Promise<SavedView[]> => {
   const supabase = await createClient();
   const { data } = await supabase.from("saved_views").select("*").eq("project_id", projectId).order("position").order("id");
   return ((data ?? []) as SavedView[]).map((row) => ({
     ...row,
     spec: row.spec && typeof row.spec === "object" ? (row.spec as Record<string, string>) : {},
   }));
-}
+});
 

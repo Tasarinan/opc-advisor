@@ -11,8 +11,7 @@ import {
   wipPressure,
   type CountRow,
 } from "@/lib/dashboard";
-import { getOwnedProjectOr404, listMembers, listProjects, loadBoard } from "@/lib/queries";
-import { createClient } from "@/utils/supabase/server";
+import { getOwnedProjectOr404, listMembers, listProjects, loadBoard, requireUser } from "@/lib/queries";
 import { redirect } from "next/navigation";
 
 const PULSE_LABEL: Record<string, string> = {
@@ -25,10 +24,7 @@ const PULSE_LABEL: Record<string, string> = {
 
 export default async function DashboardPage({ params }: { params: Promise<{ key: string }> }) {
   const { key } = await params;
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { user } = await requireUser();
   if (!user) redirect("/sign-in");
   const [project, projects] = await Promise.all([getOwnedProjectOr404(key), listProjects()]);
   const [board, members] = await Promise.all([loadBoard(project.id), listMembers(project.id)]);

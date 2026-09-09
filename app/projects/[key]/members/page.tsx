@@ -5,8 +5,7 @@ import { Input } from "@/components/ui/input";
 import { ErrorBanner, ProjectNav } from "@/components/project-nav";
 import { SubmitButton } from "@/components/submit-button";
 import { canManageMembers } from "@/lib/membership";
-import { getMyRole, getOwnedProjectOr404, listInvites, listMembers, listProjects } from "@/lib/queries";
-import { createClient } from "@/utils/supabase/server";
+import { getMyRole, getOwnedProjectOr404, listInvites, listMembers, listProjects, requireUser } from "@/lib/queries";
 import { redirect } from "next/navigation";
 
 export default async function MembersPage({
@@ -17,10 +16,7 @@ export default async function MembersPage({
   searchParams: Promise<{ error?: string }>;
 }) {
   const { key } = await params;
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { user } = await requireUser();
   if (!user) redirect("/sign-in");
   const [project, projects, sp] = await Promise.all([
     getOwnedProjectOr404(key),

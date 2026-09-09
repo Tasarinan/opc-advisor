@@ -17,6 +17,7 @@ import { normalizeLinkEndpoints, parseIssueRef, parseLinkType } from "@/lib/issu
 import { completedAtOnColumnChange } from "@/lib/dashboard";
 import { parseInitiativeName, parseInitiativeStatus, resolveInitiativeId } from "@/lib/initiatives";
 import { parseIssueQuery, parseViewKind, parseViewName, specFromQuery } from "@/lib/saved-views";
+import { panelBounceHref } from "@/lib/timeline-drag";
 import { mapAuthError } from "@/lib/auth-errors";
 import { createAdminClient } from "@/utils/supabase/admin";
 
@@ -84,9 +85,18 @@ export async function signInAction(formData: FormData) {
   const password = String(formData.get("password") ?? "");
   const next = String(formData.get("next") ?? "/projects");
   const supabase = await createClient();
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
-  if (error) {
-    redirect(`/sign-in?error=${encodeURIComponent("邮箱或密码不正确")}&next=${encodeURIComponent(next)}`);
+  try {
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) {
+      if ((error.message ?? "").toLowerCase().includes("fetch failed")) {
+        redirect(`/sign-in?error=${encodeURIComponent(mapAuthError(error))}&next=${encodeURIComponent(next)}`);
+      }
+      redirect(`/sign-in?error=${encodeURIComponent("邮箱或密码不正确")}&next=${encodeURIComponent(next)}`);
+    }
+  } catch (e) {
+    redirect(
+      `/sign-in?error=${encodeURIComponent(mapAuthError({ message: (e as Error).message }))}&next=${encodeURIComponent(next)}`,
+    );
   }
   redirect(next.startsWith("/") ? next : "/projects");
 }
@@ -95,10 +105,15 @@ export async function signUpAction(formData: FormData) {
   const email = String(formData.get("email") ?? "").trim();
   const password = String(formData.get("password") ?? "");
   const supabase = await createClient();
-  const { data, error } = await supabase.auth.signUp({
-    email,
-    password,
-  });
+  let data: { session?: unknown } | null = null;
+  let error: { message?: string; code?: string; status?: number } | null = null;
+  try {
+    const result = await supabase.auth.signUp({ email, password });
+    data = result.data;
+    error = result.error;
+  } catch (e) {
+    redirect(`/sign-up?error=${encodeURIComponent(mapAuthError({ message: (e as Error).message }))}`);
+  }
   const rateLimited =
     error &&
     (error.status === 429 ||
@@ -292,13 +307,8 @@ export async function moveIssueAction(formData: FormData) {
 
 function bounceIssue(formData: FormData, key: string, sequence: number, error?: string): never {
   const returnTo = String(formData.get("returnTo") ?? "");
-  if (returnTo.startsWith(`/projects/${key}`)) {
-    const u = new URL(returnTo, "http://local.invalid");
-    u.searchParams.set("issue", String(sequence));
-    if (error) u.searchParams.set("error", error);
-    else u.searchParams.delete("error");
-    redirect(`${u.pathname}${u.search}`);
-  }
+  const href = panelBounceHref(returnTo, key, sequence, error);
+  if (href) redirect(href);
   if (error) {
     redirect(`/projects/${key}/issues/${sequence}?error=` + encodeURIComponent(error));
   }

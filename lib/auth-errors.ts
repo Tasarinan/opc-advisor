@@ -14,8 +14,13 @@ export function mapAuthError(error: { message?: string; code?: string; status?: 
   if (code.includes("weak_password") || message.includes("password")) {
     return "密码太弱，请至少 6 位";
   }
-  if (code.includes("signup_disabled") || message.includes("signups not allowed")) {
-    return "当前项目未开放注册";
+  if (
+    message.includes("fetch failed") ||
+    message.includes("network") ||
+    code.includes("enotfound") ||
+    code.includes("econn")
+  ) {
+    return "连不上数据库。若刚改过 .env.local，请停掉占用 3000 的旧进程后重新运行 npm run dev";
   }
   if (error.message) return `注册失败：${error.message}`;
   return "注册失败，请稍后重试";

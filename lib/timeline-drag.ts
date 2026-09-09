@@ -78,6 +78,25 @@ export function withoutIssueQuery(search: string): string {
   return q ? `?${q}` : "";
 }
 
+/** After a panel save, drop `issue` so the overlay closes. Keep it on validation errors. */
+export function panelBounceHref(
+  returnTo: string,
+  projectKey: string,
+  sequence: number,
+  error?: string,
+): string | null {
+  if (!returnTo.startsWith(`/projects/${projectKey}`)) return null;
+  const u = new URL(returnTo, "http://local.invalid");
+  if (error) {
+    u.searchParams.set("issue", String(sequence));
+    u.searchParams.set("error", error);
+  } else {
+    u.searchParams.delete("issue");
+    u.searchParams.delete("error");
+  }
+  return `${u.pathname}${u.search}`;
+}
+
 export function parseIssueSequence(raw: string | undefined): number | null {
   if (!raw) return null;
   const n = Number(raw);

@@ -3,8 +3,7 @@ import { AppHeader } from "@/components/app-header";
 import { SubmitButton } from "@/components/submit-button";
 import { Input } from "@/components/ui/input";
 import { ErrorBanner } from "@/components/project-nav";
-import { createClient } from "@/utils/supabase/server";
-import { listProjects } from "@/lib/queries";
+import { listProjects, requireUser } from "@/lib/queries";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
@@ -13,10 +12,7 @@ export default async function ProjectsPage({
 }: {
   searchParams: Promise<{ error?: string }>;
 }) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { user } = await requireUser();
   if (!user) redirect("/sign-in?next=/projects");
   const projects = await listProjects();
   const { error } = await searchParams;

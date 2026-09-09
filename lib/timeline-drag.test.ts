@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   addUtcDays,
   expandTimelineRange,
+  panelBounceHref,
   parseIssueSequence,
   percentDeltaToDays,
   resizeIssueEnd,
@@ -72,5 +73,20 @@ describe("issue query", () => {
     expect(parseIssueSequence("12")).toBe(12);
     expect(parseIssueSequence("0")).toBeNull();
     expect(parseIssueSequence("1.5")).toBeNull();
+  });
+});
+
+describe("panelBounceHref", () => {
+  it("closes the panel on success", () => {
+    expect(panelBounceHref("/projects/OPC/table?cycle=1", "OPC", 4)).toBe("/projects/OPC/table?cycle=1");
+    expect(panelBounceHref("/projects/OPC", "OPC", 4)).toBe("/projects/OPC");
+  });
+  it("keeps the panel open when there is an error", () => {
+    const href = panelBounceHref("/projects/OPC", "OPC", 4, "标题必填");
+    expect(href).not.toBeNull();
+    const u = new URL(href!, "http://local.invalid");
+    expect(u.pathname).toBe("/projects/OPC");
+    expect(u.searchParams.get("issue")).toBe("4");
+    expect(u.searchParams.get("error")).toBe("标题必填");
   });
 });

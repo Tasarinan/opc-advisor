@@ -18,8 +18,7 @@ import { checklistProgress } from "@/lib/checklist";
 import { extractMentionTokens, nestComments, resolveMentions, splitMentionedBody } from "@/lib/comments";
 import { describeLink, LINK_TYPE_OPTIONS } from "@/lib/issue-links";
 import { formatIssueKey } from "@/lib/project-key";
-import { getOwnedProjectOr404, listMembers, listProjects, loadBoard, loadIssueDetail } from "@/lib/queries";
-import { createClient } from "@/utils/supabase/server";
+import { getOwnedProjectOr404, listMembers, listProjects, loadBoard, loadIssueDetail, requireUser } from "@/lib/queries";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 
@@ -32,10 +31,7 @@ export default async function IssuePage({
 }) {
   const { key, n } = await params;
   const sequence = Number(n);
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { user } = await requireUser();
   if (!user) redirect("/sign-in");
   const [project, projects, { error }] = await Promise.all([
     getOwnedProjectOr404(key),

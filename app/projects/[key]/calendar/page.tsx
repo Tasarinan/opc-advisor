@@ -6,8 +6,7 @@ import { formatIssueKey } from "@/lib/project-key";
 import { applyIssueFilters, parseIssueQuery, searchFromQuery } from "@/lib/saved-views";
 import { searchFromParams, withIssueQuery } from "@/lib/timeline-drag";
 import { issuesForCalendar } from "@/lib/view-filters";
-import { getOwnedProjectOr404, listMembers, listProjects, loadBoard } from "@/lib/queries";
-import { createClient } from "@/utils/supabase/server";
+import { getOwnedProjectOr404, listMembers, listProjects, loadBoard, requireUser } from "@/lib/queries";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
@@ -37,10 +36,7 @@ export default async function CalendarPage({
   const { key } = await params;
   const sp = await searchParams;
   const { ym } = sp;
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { user } = await requireUser();
   if (!user) redirect("/sign-in");
   const [project, projects] = await Promise.all([getOwnedProjectOr404(key), listProjects()]);
   const [board, members] = await Promise.all([loadBoard(project.id), listMembers(project.id)]);

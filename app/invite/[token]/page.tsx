@@ -1,8 +1,7 @@
 import { acceptInviteAction } from "@/app/actions";
 import { ErrorBanner } from "@/components/project-nav";
 import { SubmitButton } from "@/components/submit-button";
-import { getInviteByToken } from "@/lib/queries";
-import { createClient } from "@/utils/supabase/server";
+import { getInviteByToken, requireUser } from "@/lib/queries";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
@@ -15,10 +14,7 @@ export default async function InvitePage({
 }) {
   const { token } = await params;
   const { error } = await searchParams;
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { user } = await requireUser();
   const invite = await getInviteByToken(token);
 
   if (!invite || invite.status !== "pending") {

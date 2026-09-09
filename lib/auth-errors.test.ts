@@ -12,7 +12,7 @@ describe("mapAuthError", () => {
     expect(mapAuthError({ message: "User already registered" })).toBe("该邮箱已注册，请直接登录");
   });
 
-  it("maps invalid email", () => {
-    expect(mapAuthError({ message: "Email address is invalid", code: "email_address_invalid" })).toMatch(/邮箱/);
+  it("maps fetch failed", () => {
+    expect(mapAuthError({ message: "fetch failed" })).toMatch(/连不上数据库/);
   });
 });
