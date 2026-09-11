@@ -80,6 +80,33 @@ body {
     @apply mx-auto w-full max-w-[88rem] px-4 py-6 sm:px-6;
   }
 
+  .page-shell-project {
+    @apply w-full flex-1 px-4 py-5 sm:px-6;
+  }
+
+  .project-frame {
+    @apply flex min-h-screen;
+  }
+
+  .project-sidebar {
+    @apply fixed inset-y-0 left-0 z-40 flex w-[15.5rem] shrink-0 flex-col border-r border-border/80 bg-card transition-transform duration-150 md:static md:z-auto;
+  }
+
+  .nav-link {
+    @apply block rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors duration-150;
+  }
+
+  .nav-link:hover {
+    background: var(--accent);
+    color: var(--accent-foreground);
+  }
+
+  .nav-link-active {
+    background: var(--secondary);
+    color: var(--secondary-foreground);
+    font-weight: 500;
+  }
+
   .page-title {
     @apply mb-1 text-2xl font-semibold tracking-tight;
   }

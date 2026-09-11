@@ -3,10 +3,10 @@ import {
   deleteInitiativeAction,
   updateInitiativeAction,
 } from "@/app/actions";
-import { AppHeader } from "@/components/app-header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ErrorBanner, ProjectNav } from "@/components/project-nav";
+import { ErrorBanner } from "@/components/project-nav";
+import { ProjectShell } from "@/components/project-shell";
 import { INITIATIVE_STATUS_OPTIONS, initiativeProgress } from "@/lib/initiatives";
 import { formatIssueKey } from "@/lib/project-key";
 import { getOwnedProjectOr404, listProjects, loadBoard, requireUser } from "@/lib/queries";
@@ -28,11 +28,8 @@ export default async function InitiativesPage({
   const colState = new Map(board.columns.map((c) => [c.id, c.state_type]));
 
   return (
-    <>
-      <AppHeader email={user.email ?? null} projects={projects} currentKey={key} />
-      <main className="page-shell">
+    <ProjectShell email={user.email ?? null} projects={projects} currentKey={key} current={`/projects/${key}/initiatives`}>
         <h1 className="page-title">{project.name}</h1>
-        <ProjectNav projectKey={key} current={`/projects/${key}/initiatives`} />
         <ErrorBanner message={sp.error} />
         <p className="mb-4 text-sm text-muted-foreground">主题用来归类一批 Issue（类似 Epic）。每个 Issue 最多属于一个主题。</p>
 
@@ -130,7 +127,6 @@ export default async function InitiativesPage({
             })}
           </ul>
         )}
-      </main>
-    </>
+    </ProjectShell>
   );
 }

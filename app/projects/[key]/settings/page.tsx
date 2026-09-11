@@ -9,10 +9,10 @@ import {
   renameColumnAction,
   updateProjectDescriptionAction,
 } from "@/app/actions";
-import { AppHeader } from "@/components/app-header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ErrorBanner, ProjectNav } from "@/components/project-nav";
+import { ErrorBanner } from "@/components/project-nav";
+import { ProjectShell } from "@/components/project-shell";
 import { getOwnedProjectOr404, listMembers, listProjects, loadBoard, requireUser } from "@/lib/queries";
 import { redirect } from "next/navigation";
 
@@ -30,11 +30,8 @@ export default async function SettingsPage({
   const [board, members] = await Promise.all([loadBoard(project.id), listMembers(project.id)]);
 
   return (
-    <>
-      <AppHeader email={user.email ?? null} projects={projects} currentKey={key} />
-      <main className="page-shell">
+    <ProjectShell email={user.email ?? null} projects={projects} currentKey={key} current={`/projects/${key}/settings`}>
         <h1 className="page-title">{project.name}</h1>
-        <ProjectNav projectKey={key} current={`/projects/${key}/settings`} />
         <ErrorBanner message={sp.error} />
 
         <section className="mb-8 panel-raised p-4">
@@ -181,7 +178,6 @@ export default async function SettingsPage({
             </Button>
           </form>
         </section>
-      </main>
-    </>
+    </ProjectShell>
   );
 }

@@ -1,8 +1,8 @@
 import { inviteMemberAction, removeMemberAction, revokeInviteAction } from "@/app/actions";
-import { AppHeader } from "@/components/app-header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ErrorBanner, ProjectNav } from "@/components/project-nav";
+import { ErrorBanner } from "@/components/project-nav";
+import { ProjectShell } from "@/components/project-shell";
 import { SubmitButton } from "@/components/submit-button";
 import { canManageMembers } from "@/lib/membership";
 import { getMyRole, getOwnedProjectOr404, listInvites, listMembers, listProjects, requireUser } from "@/lib/queries";
@@ -32,11 +32,8 @@ export default async function MembersPage({
   const site = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
   return (
-    <>
-      <AppHeader email={user.email ?? null} projects={projects} currentKey={key} />
-      <main className="page-shell">
+    <ProjectShell email={user.email ?? null} projects={projects} currentKey={key} current={`/projects/${key}/members`}>
         <h1 className="page-title">{project.name}</h1>
-        <ProjectNav projectKey={key} current={`/projects/${key}/members`} />
         <ErrorBanner message={sp.error} />
 
         <section className="mb-8 panel-raised p-4">
@@ -98,7 +95,6 @@ export default async function MembersPage({
             </section>
           </>
         )}
-      </main>
-    </>
+    </ProjectShell>
   );
 }

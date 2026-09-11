@@ -1,7 +1,7 @@
-import { AppHeader } from "@/components/app-header";
 import { IssueFilterBar } from "@/components/issue-filter-bar";
 import { IssuePanelHost } from "@/components/issue-panel-host";
-import { ErrorBanner, ProjectNav } from "@/components/project-nav";
+import { ErrorBanner } from "@/components/project-nav";
+import { ProjectShell } from "@/components/project-shell";
 import { formatChecklistProgress } from "@/lib/checklist";
 import { formatEstimate, formatPriority } from "@/lib/issue-meta";
 import { formatIssueKey } from "@/lib/project-key";
@@ -52,11 +52,14 @@ export default async function TablePage({
   const search = searchFromParams(sp);
 
   return (
-    <>
-      <AppHeader email={user.email ?? null} projects={projects} currentKey={key} />
-      <main className="page-shell">
+    <ProjectShell
+      email={user.email ?? null}
+      projects={projects}
+      currentKey={key}
+      current={pathname}
+      queryString={searchFromQuery(query)}
+    >
         <h1 className="page-title">{project.name}</h1>
-        <ProjectNav projectKey={key} current={pathname} queryString={searchFromQuery(query)} />
         <IssueFilterBar
           projectKey={key}
           basePath={pathname}
@@ -133,8 +136,7 @@ export default async function TablePage({
           issue={sp.issue}
           error={sp.error}
         />
-      </main>
-    </>
+    </ProjectShell>
   );
 }
 

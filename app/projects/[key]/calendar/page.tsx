@@ -1,7 +1,6 @@
-import { AppHeader } from "@/components/app-header";
 import { IssueFilterBar } from "@/components/issue-filter-bar";
 import { IssuePanelHost } from "@/components/issue-panel-host";
-import { ProjectNav } from "@/components/project-nav";
+import { ProjectShell } from "@/components/project-shell";
 import { formatIssueKey } from "@/lib/project-key";
 import { applyIssueFilters, parseIssueQuery, searchFromQuery } from "@/lib/saved-views";
 import { searchFromParams, withIssueQuery } from "@/lib/timeline-drag";
@@ -62,11 +61,14 @@ export default async function CalendarPage({
   const cells = monthGrid(y, m);
 
   return (
-    <>
-      <AppHeader email={user.email ?? null} projects={projects} currentKey={key} />
-      <main className="page-shell">
+    <ProjectShell
+      email={user.email ?? null}
+      projects={projects}
+      currentKey={key}
+      current={pathname}
+      queryString={filterQs}
+    >
         <h1 className="page-title">{project.name}</h1>
-        <ProjectNav projectKey={key} current={pathname} queryString={filterQs} />
         <IssueFilterBar
           projectKey={key}
           basePath={pathname}
@@ -123,7 +125,6 @@ export default async function CalendarPage({
           issue={sp.issue}
           error={sp.error}
         />
-      </main>
-    </>
+    </ProjectShell>
   );
 }

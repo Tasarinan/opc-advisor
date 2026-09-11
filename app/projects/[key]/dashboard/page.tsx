@@ -1,5 +1,4 @@
-import { AppHeader } from "@/components/app-header";
-import { ProjectNav } from "@/components/project-nav";
+import { ProjectShell } from "@/components/project-shell";
 import {
   assigneeBreakdown,
   maxBarCount,
@@ -54,11 +53,8 @@ export default async function DashboardPage({ params }: { params: Promise<{ key:
   const roots = board.issues.filter((i) => !i.parent_id).length;
 
   return (
-    <>
-      <AppHeader email={user.email ?? null} projects={projects} currentKey={key} />
-      <main className="page-shell">
+    <ProjectShell email={user.email ?? null} projects={projects} currentKey={key} current={`/projects/${key}/dashboard`}>
         <h1 className="page-title">{project.name}</h1>
-        <ProjectNav projectKey={key} current={`/projects/${key}/dashboard`} />
         <p className="mb-6 text-sm text-muted-foreground">
           吞吐按进入「已完成」列的时间统计。历史 Issue 在迁移后第一次拖入完成列才会有完成时间。
         </p>
@@ -106,8 +102,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ key:
             </ul>
           )}
         </section>
-      </main>
-    </>
+    </ProjectShell>
   );
 }
 

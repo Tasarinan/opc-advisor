@@ -1,7 +1,6 @@
-import { AppHeader } from "@/components/app-header";
 import { IssueFilterBar } from "@/components/issue-filter-bar";
 import { IssuePanelHost } from "@/components/issue-panel-host";
-import { ProjectNav } from "@/components/project-nav";
+import { ProjectShell } from "@/components/project-shell";
 import { TimelineBoard } from "@/components/timeline-board";
 import { applyIssueFilters, parseIssueQuery, searchFromQuery } from "@/lib/saved-views";
 import { expandTimelineRange, searchFromParams } from "@/lib/timeline-drag";
@@ -40,11 +39,14 @@ export default async function TimelinePage({
   const search = searchFromParams(sp);
 
   return (
-    <>
-      <AppHeader email={user.email ?? null} projects={projects} currentKey={key} />
-      <main className="page-shell">
+    <ProjectShell
+      email={user.email ?? null}
+      projects={projects}
+      currentKey={key}
+      current={pathname}
+      queryString={searchFromQuery(query)}
+    >
         <h1 className="page-title">{project.name}</h1>
-        <ProjectNav projectKey={key} current={pathname} queryString={searchFromQuery(query)} />
         <IssueFilterBar
           projectKey={key}
           basePath={pathname}
@@ -69,7 +71,6 @@ export default async function TimelinePage({
           issue={sp.issue}
           error={sp.error}
         />
-      </main>
-    </>
+    </ProjectShell>
   );
 }

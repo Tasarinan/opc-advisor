@@ -9,11 +9,11 @@ import {
   deleteIssueLinkAction,
   toggleChecklistItemAction,
 } from "@/app/actions";
-import { AppHeader } from "@/components/app-header";
+import { ErrorBanner } from "@/components/project-nav";
+import { ProjectShell } from "@/components/project-shell";
 import { IssueFieldsForm } from "@/components/issue-fields-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ErrorBanner } from "@/components/project-nav";
 import { checklistProgress } from "@/lib/checklist";
 import { extractMentionTokens, nestComments, resolveMentions, splitMentionedBody } from "@/lib/comments";
 import { describeLink, LINK_TYPE_OPTIONS } from "@/lib/issue-links";
@@ -53,9 +53,7 @@ export default async function IssuePage({
     .filter((v) => linkedById.has(v.otherId));
 
   return (
-    <>
-      <AppHeader email={user.email ?? null} projects={projects} currentKey={key} />
-      <main className="page-shell">
+    <ProjectShell email={user.email ?? null} projects={projects} currentKey={key} current={`/projects/${key}/issues/${n}`}>
         <Link className="text-sm link-plain" href={`/projects/${key}`}>
           ← 返回看板
         </Link>
@@ -262,8 +260,7 @@ export default async function IssuePage({
             </Button>
           </form>
         </section>
-      </main>
-    </>
+    </ProjectShell>
   );
 }
 

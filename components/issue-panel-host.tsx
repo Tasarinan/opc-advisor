@@ -1,5 +1,7 @@
 import { IssueSidePanel } from "@/components/issue-side-panel";
+import { IssuePanelFrame } from "@/components/issue-panel-close";
 import { parseIssueSequence, withoutIssueQuery } from "@/lib/timeline-drag";
+import { Suspense } from "react";
 
 export async function IssuePanelHost({
   projectKey,
@@ -22,13 +24,17 @@ export async function IssuePanelHost({
   const closeHref = `${pathname}${rest}`;
   const returnTo = `${pathname}${rest}`;
   return (
-    <IssueSidePanel
-      projectKey={projectKey}
-      projectId={projectId}
-      sequence={sequence}
-      closeHref={closeHref}
-      returnTo={returnTo}
-      error={error}
-    />
+    <Suspense fallback={null}>
+      <IssuePanelFrame closeHref={closeHref}>
+        <IssueSidePanel
+          projectKey={projectKey}
+          projectId={projectId}
+          sequence={sequence}
+          closeHref={closeHref}
+          returnTo={returnTo}
+          error={error}
+        />
+      </IssuePanelFrame>
+    </Suspense>
   );
 }

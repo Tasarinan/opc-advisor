@@ -1,8 +1,8 @@
 import { completeCycleAction, createCycleAction } from "@/app/actions";
-import { AppHeader } from "@/components/app-header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ErrorBanner, ProjectNav } from "@/components/project-nav";
+import { ErrorBanner } from "@/components/project-nav";
+import { ProjectShell } from "@/components/project-shell";
 import { getOwnedProjectOr404, listProjects, loadBoard, requireUser } from "@/lib/queries";
 import { redirect } from "next/navigation";
 
@@ -21,11 +21,8 @@ export default async function CyclesPage({
   const completing = sp.complete ? Number(sp.complete) : null;
 
   return (
-    <>
-      <AppHeader email={user.email ?? null} projects={projects} currentKey={key} />
-      <main className="page-shell">
+    <ProjectShell email={user.email ?? null} projects={projects} currentKey={key} current={`/projects/${key}/cycles`}>
         <h1 className="page-title">{project.name}</h1>
-        <ProjectNav projectKey={key} current={`/projects/${key}/cycles`} />
         <ErrorBanner message={sp.error} />
         {board.cycles.length === 0 ? (
           <p className="mb-4 text-muted-foreground">还没有周期。创建一个时间盒来规划工作。</p>
@@ -95,7 +92,6 @@ export default async function CyclesPage({
             );
           })}
         </ul>
-      </main>
-    </>
+    </ProjectShell>
   );
 }
