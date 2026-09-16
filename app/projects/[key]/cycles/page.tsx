@@ -22,7 +22,7 @@ export default async function CyclesPage({
 
   return (
     <ProjectShell email={user.email ?? null} projects={projects} currentKey={key} current={`/projects/${key}/cycles`}>
-        <h1 className="page-title">{project.name}</h1>
+        <h1 className="page-title">周期</h1>
         <ErrorBanner message={sp.error} />
         {board.cycles.length === 0 ? (
           <p className="mb-4 text-muted-foreground">还没有周期。创建一个时间盒来规划工作。</p>

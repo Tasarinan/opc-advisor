@@ -1,5 +1,5 @@
 import { IssueFilterBar } from "@/components/issue-filter-bar";
-import { IssuePanelHost } from "@/components/issue-panel-host";
+import { IssuePanelHost, toDrawerSnapshot } from "@/components/issue-panel-host";
 import { ProjectShell } from "@/components/project-shell";
 import { TimelineBoard } from "@/components/timeline-board";
 import { applyIssueFilters, parseIssueQuery, searchFromQuery } from "@/lib/saved-views";
@@ -46,7 +46,14 @@ export default async function TimelinePage({
       current={pathname}
       queryString={searchFromQuery(query)}
     >
-        <h1 className="page-title">{project.name}</h1>
+      <IssuePanelHost
+        projectKey={key}
+        pathname={pathname}
+        search={search}
+        error={sp.error}
+        snapshot={toDrawerSnapshot(board, members)}
+      >
+        <h1 className="page-title">时间线</h1>
         <IssueFilterBar
           projectKey={key}
           basePath={pathname}
@@ -63,14 +70,7 @@ export default async function TimelinePage({
           range={range}
           search={search}
         />
-        <IssuePanelHost
-          projectKey={key}
-          projectId={project.id}
-          pathname={pathname}
-          search={search}
-          issue={sp.issue}
-          error={sp.error}
-        />
+      </IssuePanelHost>
     </ProjectShell>
   );
 }

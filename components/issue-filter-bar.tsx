@@ -38,11 +38,11 @@ export function IssueFilterBar({
   showTableOptions?: boolean;
 }) {
   return (
-    <div className="mb-5 space-y-3">
-      <form action={basePath} method="get" className="flex flex-wrap items-end gap-3 text-sm">
-        <label className="text-muted-foreground">
+    <div className="mb-4 space-y-2">
+      <form action={basePath} method="get" className="flex flex-wrap items-center gap-2 text-[13px]">
+        <label className="field-label">
           周期
-          <select name="cycle" defaultValue={query.cycleId ?? ""} className="field-control mt-1 ml-0 min-w-[8rem]">
+          <select name="cycle" defaultValue={query.cycleId ?? ""} className="field-control mt-0.5 min-w-[7.5rem]">
             <option value="">全部</option>
             {cycles.map((c) => (
               <option key={c.id} value={c.id}>
@@ -51,9 +51,9 @@ export function IssueFilterBar({
             ))}
           </select>
         </label>
-        <label className="text-muted-foreground">
+        <label className="field-label">
           类型
-          <select name="type" defaultValue={query.typeId ?? ""} className="field-control mt-1 min-w-[8rem]">
+          <select name="type" defaultValue={query.typeId ?? ""} className="field-control mt-0.5 min-w-[7.5rem]">
             <option value="">全部</option>
             {types.map((t) => (
               <option key={t.id} value={t.id}>
@@ -62,9 +62,9 @@ export function IssueFilterBar({
             ))}
           </select>
         </label>
-        <label className="text-muted-foreground">
+        <label className="field-label">
           优先级
-          <select name="priority" defaultValue={query.priority ?? ""} className="field-control mt-1 min-w-[8rem]">
+          <select name="priority" defaultValue={query.priority ?? ""} className="field-control mt-0.5 min-w-[6.5rem]">
             <option value="">全部</option>
             {PRIORITY_OPTIONS.filter((o) => o.value).map((o) => (
               <option key={o.value} value={o.value}>
@@ -73,9 +73,9 @@ export function IssueFilterBar({
             ))}
           </select>
         </label>
-        <label className="text-muted-foreground">
+        <label className="field-label">
           经办人
-          <select name="assignee" defaultValue={query.assigneeId ?? ""} className="field-control mt-1 min-w-[8rem]">
+          <select name="assignee" defaultValue={query.assigneeId ?? ""} className="field-control mt-0.5 min-w-[8rem]">
             <option value="">全部</option>
             <option value="none">未指派</option>
             {members.map((m) => (
@@ -87,9 +87,9 @@ export function IssueFilterBar({
         </label>
         {showTableOptions && (
           <>
-            <label className="text-muted-foreground">
+            <label className="field-label">
               分组
-              <select name="group" defaultValue={query.groupBy} className="field-control mt-1 min-w-[8rem]">
+              <select name="group" defaultValue={query.groupBy} className="field-control mt-0.5 min-w-[7.5rem]">
                 <option value="none">不分组</option>
                 <option value="column">按状态</option>
                 <option value="type">按类型</option>
@@ -98,7 +98,7 @@ export function IssueFilterBar({
             </label>
             <fieldset className="flex flex-wrap items-center gap-2">
               <legend className="sr-only">字段</legend>
-              <span className="text-muted-foreground">字段</span>
+              <span className="field-label">字段</span>
               {TABLE_FIELD_KEYS.map((f) => (
                 <label key={f} className="flex items-center gap-1">
                   <input type="checkbox" name="fields" value={f} defaultChecked={query.fields.includes(f)} />
@@ -121,8 +121,8 @@ export function IssueFilterBar({
         <input type="hidden" name="assignee" value={query.assigneeId ?? ""} />
         <input type="hidden" name="group" value={query.groupBy} />
         <input type="hidden" name="fields" value={query.fields.join(",")} />
-        <Input name="name" placeholder="保存为视图名称" required className="max-w-xs" />
-        <Button type="submit" size="sm">
+        <Input name="name" placeholder="视图名称" required className="h-7 max-w-[12rem] text-xs" />
+        <Button type="submit" size="sm" variant="outline">
           保存视图
         </Button>
       </form>

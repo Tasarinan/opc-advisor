@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, useTransition } from "react";
-import Link from "next/link";
+import { IssueOpenLink } from "@/components/issue-drawer";
 import { updateIssueDatesAction } from "@/app/actions";
 import { formatIssueKey } from "@/lib/project-key";
 import {
@@ -112,12 +112,12 @@ export function TimelineBoard({
           return (
             <div key={issue.id} className="panel-raised p-3">
               <div className="mb-2 flex flex-wrap items-baseline gap-2">
-                <Link href={withIssueQuery(search, issue.sequence_number)} className="link-plain font-medium">
+                <IssueOpenLink href={withIssueQuery(search, issue.sequence_number)} className="link-plain font-medium">
                   <span className="font-mono text-[11px] text-muted-foreground">
                     {formatIssueKey(projectKey, issue.sequence_number)}
                   </span>{" "}
                   {issue.title}
-                </Link>
+                </IssueOpenLink>
                 <span className="text-xs text-muted-foreground">
                   {issue.start_date ?? issue.due_date} → {issue.due_date ?? issue.start_date}
                 </span>
@@ -173,9 +173,9 @@ export function TimelineBoard({
         <ul className="space-y-1 text-sm">
           {unscheduled.map((issue) => (
             <li key={issue.id}>
-              <Link className="link-plain" href={withIssueQuery(search, issue.sequence_number)}>
+              <IssueOpenLink className="link-plain" href={withIssueQuery(search, issue.sequence_number)}>
                 {formatIssueKey(projectKey, issue.sequence_number)} {issue.title}
-              </Link>
+              </IssueOpenLink>
             </li>
           ))}
         </ul>

@@ -1,6 +1,7 @@
 import { signOutAction } from "@/app/actions";
 import { Button } from "@/components/ui/button";
 import { ProjectSwitcher } from "@/components/project-switcher";
+import { LogOut } from "lucide-react";
 import Link from "next/link";
 import type { Project } from "@/lib/types";
 
@@ -27,7 +28,8 @@ export function AppHeader({
             <>
               <span className="hidden truncate text-muted-foreground sm:inline">{email}</span>
               <form action={signOutAction}>
-                <Button variant="ghost" size="sm" type="submit">
+                <Button variant="ghost" size="sm" type="submit" className="gap-1.5">
+                  <LogOut className="size-3.5" aria-hidden />
                   退出
                 </Button>
               </form>

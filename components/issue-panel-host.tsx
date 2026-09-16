@@ -1,40 +1,49 @@
-import { IssueSidePanel } from "@/components/issue-side-panel";
-import { IssuePanelFrame } from "@/components/issue-panel-close";
-import { parseIssueSequence, withoutIssueQuery } from "@/lib/timeline-drag";
-import { Suspense } from "react";
+import { IssueDrawerRoot, type IssueDrawerSnapshot } from "@/components/issue-drawer";
+import { withoutIssueQuery } from "@/lib/timeline-drag";
+import type { ReactNode } from "react";
+import type { ProjectMember } from "@/lib/types";
 
-export async function IssuePanelHost({
+export function toDrawerSnapshot(
+  board: Omit<IssueDrawerSnapshot, "members">,
+  members: ProjectMember[],
+): IssueDrawerSnapshot {
+  return {
+    issues: board.issues,
+    columns: board.columns,
+    cycles: board.cycles,
+    issueTypes: board.issueTypes,
+    initiatives: board.initiatives,
+    labels: board.labels,
+    members,
+  };
+}
+
+export function IssuePanelHost({
   projectKey,
-  projectId,
   pathname,
   search,
-  issue,
   error,
+  snapshot,
+  children,
 }: {
   projectKey: string;
-  projectId: number;
   pathname: string;
   search: string;
-  issue?: string;
   error?: string;
+  snapshot: IssueDrawerSnapshot;
+  children: ReactNode;
 }) {
-  const sequence = parseIssueSequence(issue);
-  if (sequence == null) return null;
   const rest = withoutIssueQuery(search);
   const closeHref = `${pathname}${rest}`;
-  const returnTo = `${pathname}${rest}`;
   return (
-    <Suspense fallback={null}>
-      <IssuePanelFrame closeHref={closeHref}>
-        <IssueSidePanel
-          projectKey={projectKey}
-          projectId={projectId}
-          sequence={sequence}
-          closeHref={closeHref}
-          returnTo={returnTo}
-          error={error}
-        />
-      </IssuePanelFrame>
-    </Suspense>
+    <IssueDrawerRoot
+      closeHref={closeHref}
+      projectKey={projectKey}
+      returnTo={closeHref}
+      error={error}
+      snapshot={snapshot}
+    >
+      {children}
+    </IssueDrawerRoot>
   );
 }

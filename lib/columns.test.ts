@@ -1,15 +1,27 @@
 import { describe, expect, it } from "vitest";
-import { canDeleteColumn, defaultColumns, parseWipLimit, wipBlocksEnter, autoAssigneeOnEnter } from "./columns";
+import { canDeleteColumn, defaultColumns, displayColumnName, parseWipLimit, wipBlocksEnter, autoAssigneeOnEnter } from "./columns";
 
 describe("defaultColumns", () => {
-  it("returns Backlog, Todo, In Progress, Done with expected state types", () => {
+  it("returns 待规划, 待办, 进行中, 已完成 with expected state types", () => {
     const cols = defaultColumns();
     expect(cols.map((c) => [c.name, c.stateType, c.position])).toEqual([
-      ["Backlog", "backlog", 0],
-      ["Todo", "unstarted", 1],
-      ["In Progress", "started", 2],
-      ["Done", "completed", 3],
+      ["待规划", "backlog", 0],
+      ["待办", "unstarted", 1],
+      ["进行中", "started", 2],
+      ["已完成", "completed", 3],
     ]);
+  });
+});
+
+describe("displayColumnName", () => {
+  it("maps default English names to Chinese", () => {
+    expect(displayColumnName("Backlog")).toBe("待规划");
+    expect(displayColumnName("TODO")).toBe("待办");
+    expect(displayColumnName("In Progress")).toBe("进行中");
+    expect(displayColumnName("DONE")).toBe("已完成");
+  });
+  it("leaves custom names unchanged", () => {
+    expect(displayColumnName("评审")).toBe("评审");
   });
 });
 

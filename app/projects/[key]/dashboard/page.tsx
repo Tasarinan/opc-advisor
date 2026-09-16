@@ -14,7 +14,7 @@ import { getOwnedProjectOr404, listMembers, listProjects, loadBoard, requireUser
 import { redirect } from "next/navigation";
 
 const PULSE_LABEL: Record<string, string> = {
-  backlog: "Backlog",
+  backlog: "待规划",
   unstarted: "未开始",
   started: "进行中",
   completed: "已完成",
@@ -54,7 +54,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ key:
 
   return (
     <ProjectShell email={user.email ?? null} projects={projects} currentKey={key} current={`/projects/${key}/dashboard`}>
-        <h1 className="page-title">{project.name}</h1>
+        <h1 className="page-title">总览</h1>
         <p className="mb-6 text-sm text-muted-foreground">
           吞吐按进入「已完成」列的时间统计。历史 Issue 在迁移后第一次拖入完成列才会有完成时间。
         </p>
@@ -67,28 +67,28 @@ export default async function DashboardPage({ params }: { params: Promise<{ key:
         </section>
 
         <section className="mb-8 panel-raised p-4">
-          <h2 className="mb-3 font-medium">脉搏（按状态）</h2>
+          <h2 className="section-head">脉搏（按状态）</h2>
           <BarList rows={pulseRows} />
         </section>
 
         <div className="mb-8 grid gap-4 lg:grid-cols-2">
           <section className="panel-raised p-4">
-            <h2 className="mb-3 font-medium">类型分布</h2>
+            <h2 className="section-head">类型分布</h2>
             <BarList rows={types} empty="还没有 Issue。" />
           </section>
           <section className="panel-raised p-4">
-            <h2 className="mb-3 font-medium">优先级分布</h2>
+            <h2 className="section-head">优先级分布</h2>
             <BarList rows={priorities} empty="还没有 Issue。" />
           </section>
         </div>
 
         <section className="mb-8 panel-raised p-4">
-          <h2 className="mb-3 font-medium">经办人分布</h2>
+          <h2 className="section-head">经办人分布</h2>
           <BarList rows={assignees} empty="还没有 Issue。" />
         </section>
 
         <section className="panel-raised p-4">
-          <h2 className="mb-3 font-medium">WIP 压力</h2>
+          <h2 className="section-head">WIP 压力</h2>
           {wip.length === 0 ? (
             <p className="text-sm text-muted-foreground">没有设置 WIP 上限的列。</p>
           ) : (
@@ -110,7 +110,7 @@ function Stat({ label, value, warn }: { label: string; value: string; warn?: boo
   return (
     <div className="panel-raised p-4">
       <p className="text-xs text-muted-foreground">{label}</p>
-      <p className={`mt-1 text-2xl font-semibold tracking-tight ${warn ? "text-destructive" : "text-foreground"}`}>{value}</p>
+      <p className={`mt-0.5 text-xl font-semibold tabular-nums tracking-tight ${warn ? "text-destructive" : "text-foreground"}`}>{value}</p>
     </div>
   );
 }

@@ -33,11 +33,11 @@ export default async function MembersPage({
 
   return (
     <ProjectShell email={user.email ?? null} projects={projects} currentKey={key} current={`/projects/${key}/members`}>
-        <h1 className="page-title">{project.name}</h1>
+        <h1 className="page-title">成员</h1>
         <ErrorBanner message={sp.error} />
 
         <section className="mb-8 panel-raised p-4">
-          <h2 className="mb-3 font-medium">成员</h2>
+          <h2 className="section-head">成员</h2>
           <ul className="space-y-2 text-sm">
             {members.map((m) => (
               <li key={m.user_id} className="flex items-center justify-between gap-2">
@@ -62,7 +62,7 @@ export default async function MembersPage({
         {manage && (
           <>
             <section className="mb-8 panel-raised p-4">
-              <h2 className="mb-3 font-medium">邀请</h2>
+              <h2 className="section-head">邀请</h2>
               <form action={inviteMemberAction} className="mb-4 flex flex-wrap gap-2">
                 <input type="hidden" name="projectKey" value={key} />
                 <Input name="email" type="email" placeholder="同事邮箱" required className="max-w-xs" />

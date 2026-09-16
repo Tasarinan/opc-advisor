@@ -17,6 +17,7 @@ import type {
   SavedView,
 } from "@/lib/types";
 import { checklistProgress } from "@/lib/checklist";
+import { displayColumnName } from "@/lib/columns";
 
 export const requireUser = cache(async () => {
   const supabase = await createClient();
@@ -130,7 +131,10 @@ export const loadBoard = cache(async (projectId: number) => {
   }
 
   return {
-    columns: (columns ?? []) as ProjectColumn[],
+    columns: ((columns ?? []) as ProjectColumn[]).map((col) => ({
+      ...col,
+      name: displayColumnName(col.name),
+    })),
     issues: ((issues ?? []) as Issue[]).map((issue) => {
       const progress = checklistProgress(checklistByIssue.get(issue.id) ?? []);
       return {
@@ -147,7 +151,7 @@ export const loadBoard = cache(async (projectId: number) => {
   };
 });
 
-export async function loadIssueDetail(projectId: number, sequence: number) {
+export const loadIssueDetail = cache(async (projectId: number, sequence: number) => {
   const supabase = await createClient();
   const { data: issue } = await supabase
     .from("issues")
@@ -185,7 +189,7 @@ export async function loadIssueDetail(projectId: number, sequence: number) {
     links: linkRows,
     linkedIssues: (linkedIssues ?? []) as Array<{ id: number; sequence_number: number; title: string }>,
   };
-}
+});
 
 export const listSavedViews = cache(async (projectId: number): Promise<SavedView[]> => {
   const supabase = await createClient();

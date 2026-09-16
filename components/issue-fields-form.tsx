@@ -1,3 +1,5 @@
+"use client";
+
 import type { ReactNode } from "react";
 import { updateIssueAction } from "@/app/actions";
 import { Button } from "@/components/ui/button";
@@ -33,7 +35,7 @@ export function IssueFieldsForm({
   children?: ReactNode;
 }) {
   return (
-    <form action={updateIssueAction} className="space-y-4">
+    <form action={updateIssueAction} className="space-y-3">
       <input type="hidden" name="projectKey" value={projectKey} />
       <input type="hidden" name="sequence" value={sequence} />
       {returnTo ? <input type="hidden" name="returnTo" value={returnTo} /> : null}
@@ -41,16 +43,16 @@ export function IssueFieldsForm({
       <textarea
         name="description"
         defaultValue={issue.description}
-        className="field-control min-h-24"
+        className="field-control min-h-20"
         placeholder="描述"
       />
-      <div className="grid gap-3 sm:grid-cols-2">
-        <label className="text-sm text-muted-foreground">
+      <div className="grid gap-2 sm:grid-cols-2">
+        <label className="field-label">
           类型
           <select
             name="typeId"
             defaultValue={issue.type_id != null ? String(issue.type_id) : ""}
-            className="field-control mt-1"
+            className="field-control mt-0.5"
           >
             <option value="">无</option>
             {issueTypes.map((t) => (
@@ -60,9 +62,9 @@ export function IssueFieldsForm({
             ))}
           </select>
         </label>
-        <label className="text-sm text-muted-foreground">
+        <label className="field-label">
           优先级
-          <select name="priority" defaultValue={issue.priority ?? ""} className="field-control mt-1">
+          <select name="priority" defaultValue={issue.priority ?? ""} className="field-control mt-0.5">
             {PRIORITY_OPTIONS.map((o) => (
               <option key={o.value} value={o.value}>
                 {o.label}
@@ -70,17 +72,17 @@ export function IssueFieldsForm({
             ))}
           </select>
         </label>
-        <label className="text-sm text-muted-foreground">
+        <label className="field-label">
           估算点数
           <Input name="estimatePoints" type="number" min="0" step="0.5" defaultValue={issue.estimate_points ?? ""} />
         </label>
-        <label className="text-sm text-muted-foreground">
+        <label className="field-label">
           估算工时（分钟）
           <Input name="estimateMinutes" type="number" min="0" step="1" defaultValue={issue.estimate_minutes ?? ""} />
         </label>
-        <label className="text-sm text-muted-foreground">
+        <label className="field-label">
           状态
-          <select name="columnId" defaultValue={issue.column_id} className="field-control mt-1">
+          <select name="columnId" defaultValue={issue.column_id} className="field-control mt-0.5">
             {columns.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.name}
@@ -88,9 +90,9 @@ export function IssueFieldsForm({
             ))}
           </select>
         </label>
-        <label className="text-sm text-muted-foreground">
+        <label className="field-label">
           周期
-          <select name="cycleId" defaultValue={issue.cycle_id ?? ""} className="field-control mt-1">
+          <select name="cycleId" defaultValue={issue.cycle_id ?? ""} className="field-control mt-0.5">
             <option value="">无</option>
             {cycles.map((c) => (
               <option key={c.id} value={c.id}>
@@ -99,12 +101,12 @@ export function IssueFieldsForm({
             ))}
           </select>
         </label>
-        <label className="text-sm text-muted-foreground">
+        <label className="field-label">
           主题
           <select
             name="initiativeId"
             defaultValue={issue.initiative_id != null ? String(issue.initiative_id) : ""}
-            className="field-control mt-1"
+            className="field-control mt-0.5"
           >
             <option value="">无</option>
             {initiatives.map((i) => (
@@ -114,20 +116,20 @@ export function IssueFieldsForm({
             ))}
           </select>
         </label>
-        <label className="text-sm text-muted-foreground">
+        <label className="field-label">
           开始
           <Input name="startDate" type="date" defaultValue={issue.start_date ?? ""} />
         </label>
-        <label className="text-sm text-muted-foreground">
+        <label className="field-label">
           截止
           <Input name="dueDate" type="date" defaultValue={issue.due_date ?? ""} />
         </label>
       </div>
-      <fieldset className="text-sm">
-        <legend className="mb-1">标签</legend>
-        <div className="flex flex-wrap gap-3">
+      <fieldset className="text-[13px]">
+        <legend className="field-label mb-1">标签</legend>
+        <div className="flex flex-wrap gap-2">
           {labels.map((l) => (
-            <label key={l.id} className="flex items-center gap-1">
+            <label key={l.id} className="meta-chip cursor-pointer gap-1">
               <input type="checkbox" name="labelId" value={l.id} defaultChecked={labelIds.includes(l.id)} />
               {l.name}
             </label>
@@ -135,9 +137,9 @@ export function IssueFieldsForm({
           {labels.length === 0 && <span className="text-muted-foreground">请在设置中创建标签</span>}
         </div>
       </fieldset>
-      <label className="text-sm text-muted-foreground">
+      <label className="field-label">
         经办人
-        <select name="assigneeId" defaultValue={issue.assignee_id ?? ""} className="field-control mt-1">
+        <select name="assigneeId" defaultValue={issue.assignee_id ?? ""} className="field-control mt-0.5">
           <option value="">未指派</option>
           {members.map((m) => (
             <option key={m.user_id} value={m.user_id}>
@@ -147,7 +149,9 @@ export function IssueFieldsForm({
         </select>
       </label>
       {children}
-      <Button type="submit">保存</Button>
+      <Button type="submit" size="sm">
+        保存
+      </Button>
     </form>
   );
 }

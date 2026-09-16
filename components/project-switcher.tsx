@@ -7,7 +7,7 @@ export function ProjectSwitcher({ projects, currentKey }: { projects: Project[];
   const router = useRouter();
   return (
     <select
-      className="field-control h-8 w-auto max-w-[16rem] min-w-[8rem] cursor-pointer py-0 text-xs"
+      className="field-control h-7 w-full cursor-pointer py-0 text-xs"
       value={currentKey ?? ""}
       onChange={(e) => {
         if (e.target.value) router.push(`/projects/${e.target.value}`);

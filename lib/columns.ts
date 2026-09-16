@@ -8,11 +8,23 @@ export type ColumnDraft = {
 
 export function defaultColumns(): ColumnDraft[] {
   return [
-    { name: "Backlog", stateType: "backlog", position: 0 },
-    { name: "Todo", stateType: "unstarted", position: 1 },
-    { name: "In Progress", stateType: "started", position: 2 },
-    { name: "Done", stateType: "completed", position: 3 },
+    { name: "待规划", stateType: "backlog", position: 0 },
+    { name: "待办", stateType: "unstarted", position: 1 },
+    { name: "进行中", stateType: "started", position: 2 },
+    { name: "已完成", stateType: "completed", position: 3 },
   ];
+}
+
+const COLUMN_NAME_ZH: Record<string, string> = {
+  backlog: "待规划",
+  todo: "待办",
+  "in progress": "进行中",
+  "in pressess": "进行中",
+  done: "已完成",
+};
+
+export function displayColumnName(name: string): string {
+  return COLUMN_NAME_ZH[name.trim().toLowerCase()] ?? name;
 }
 
 export function pickCompletedColumnId(

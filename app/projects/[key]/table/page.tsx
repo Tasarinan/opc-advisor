@@ -1,15 +1,15 @@
 import { IssueFilterBar } from "@/components/issue-filter-bar";
-import { IssuePanelHost } from "@/components/issue-panel-host";
+import { IssuePanelHost, toDrawerSnapshot } from "@/components/issue-panel-host";
 import { ErrorBanner } from "@/components/project-nav";
 import { ProjectShell } from "@/components/project-shell";
 import { formatChecklistProgress } from "@/lib/checklist";
 import { formatEstimate, formatPriority } from "@/lib/issue-meta";
 import { formatIssueKey } from "@/lib/project-key";
 import { applyIssueFilters, groupIssues, parseIssueQuery, searchFromQuery, type TableField } from "@/lib/saved-views";
+import { IssueOpenLink } from "@/components/issue-drawer";
 import { searchFromParams, withIssueQuery } from "@/lib/timeline-drag";
 import { getOwnedProjectOr404, listMembers, listProjects, loadBoard, requireUser } from "@/lib/queries";
 import type { IssueWithLabels } from "@/lib/types";
-import Link from "next/link";
 import { redirect } from "next/navigation";
 
 export default async function TablePage({
@@ -59,7 +59,14 @@ export default async function TablePage({
       current={pathname}
       queryString={searchFromQuery(query)}
     >
-        <h1 className="page-title">{project.name}</h1>
+      <IssuePanelHost
+        projectKey={key}
+        pathname={pathname}
+        search={search}
+        error={sp.error}
+        snapshot={toDrawerSnapshot(board, members)}
+      >
+        <h1 className="page-title">表格</h1>
         <IssueFilterBar
           projectKey={key}
           basePath={pathname}
@@ -79,19 +86,19 @@ export default async function TablePage({
               <div key={g.key}>
                 {query.groupBy !== "none" && <h2 className="mb-2 font-medium">{g.label || "未分组"}</h2>}
                 <div className="overflow-x-auto panel-raised">
-                  <table className="w-full text-left text-sm">
-                    <thead className="text-muted-foreground">
+                  <table className="w-full text-left text-[13px]">
+                    <thead className="text-[11px] text-muted-foreground">
                       <tr>
-                        {fields.has("key") && <th className="px-3 py-2">Key</th>}
-                        {fields.has("title") && <th className="px-3 py-2">标题</th>}
-                        {fields.has("type") && <th className="px-3 py-2">类型</th>}
-                        {fields.has("priority") && <th className="px-3 py-2">优先级</th>}
-                        {fields.has("estimate") && <th className="px-3 py-2">估算</th>}
-                        {fields.has("checklist") && <th className="px-3 py-2">清单</th>}
-                        {fields.has("status") && <th className="px-3 py-2">状态</th>}
-                        {fields.has("labels") && <th className="px-3 py-2">标签</th>}
-                        {fields.has("cycle") && <th className="px-3 py-2">周期</th>}
-                        {fields.has("due") && <th className="px-3 py-2">截止</th>}
+                        {fields.has("key") && <th className="px-2.5 py-1.5 font-medium">Key</th>}
+                        {fields.has("title") && <th className="px-2.5 py-1.5 font-medium">标题</th>}
+                        {fields.has("type") && <th className="px-2.5 py-1.5 font-medium">类型</th>}
+                        {fields.has("priority") && <th className="px-2.5 py-1.5 font-medium">优先级</th>}
+                        {fields.has("estimate") && <th className="px-2.5 py-1.5 font-medium">估算</th>}
+                        {fields.has("checklist") && <th className="px-2.5 py-1.5 font-medium">清单</th>}
+                        {fields.has("status") && <th className="px-2.5 py-1.5 font-medium">状态</th>}
+                        {fields.has("labels") && <th className="px-2.5 py-1.5 font-medium">标签</th>}
+                        {fields.has("cycle") && <th className="px-2.5 py-1.5 font-medium">周期</th>}
+                        {fields.has("due") && <th className="px-2.5 py-1.5 font-medium">截止</th>}
                       </tr>
                     </thead>
                     <tbody>
@@ -128,14 +135,7 @@ export default async function TablePage({
             ))}
           </div>
         )}
-        <IssuePanelHost
-          projectKey={key}
-          projectId={project.id}
-          pathname={pathname}
-          search={search}
-          issue={sp.issue}
-          error={sp.error}
-        />
+      </IssuePanelHost>
     </ProjectShell>
   );
 }
@@ -161,37 +161,37 @@ function IssueRow({
 }) {
   const href = withIssueQuery(search, issue.sequence_number);
   return (
-    <tr className={indent ? "border-t border-border/40 bg-muted/50" : "border-t border-border/50"}>
+    <tr className={indent ? "border-t border-border/40 bg-muted/40" : "border-t border-border/50"}>
       {fields.has("key") && (
-        <td className="px-3 py-2 font-mono text-xs">
-          <Link className="link-plain" href={href}>
+        <td className="px-2.5 py-1.5 font-mono text-[11px]">
+          <IssueOpenLink className="link-plain" href={href}>
             {formatIssueKey(keyPrefix, issue.sequence_number)}
-          </Link>
+          </IssueOpenLink>
         </td>
       )}
       {fields.has("title") && (
-        <td className={`px-3 py-2 ${indent ? "pl-8 text-muted-foreground" : ""}`}>
-          <Link className="link-plain" href={href}>
+        <td className={`px-2.5 py-1.5 ${indent ? "pl-8 text-muted-foreground" : ""}`}>
+          <IssueOpenLink className="link-plain" href={href}>
             {indent ? `↳ ${issue.title}` : issue.title}
-          </Link>
+          </IssueOpenLink>
         </td>
       )}
-      {fields.has("type") && <td className="px-3 py-2">{issue.type_id ? typeName.get(issue.type_id) : "—"}</td>}
-      {fields.has("priority") && <td className="px-3 py-2">{formatPriority(issue.priority) || "—"}</td>}
+      {fields.has("type") && <td className="px-2.5 py-1.5">{issue.type_id ? typeName.get(issue.type_id) : "—"}</td>}
+      {fields.has("priority") && <td className="px-2.5 py-1.5">{formatPriority(issue.priority) || "—"}</td>}
       {fields.has("estimate") && (
-        <td className="px-3 py-2">{formatEstimate(issue.estimate_points, issue.estimate_minutes) || "—"}</td>
+        <td className="px-2.5 py-1.5">{formatEstimate(issue.estimate_points, issue.estimate_minutes) || "—"}</td>
       )}
       {fields.has("checklist") && (
-        <td className="px-3 py-2">{formatChecklistProgress(issue.checklistDone, issue.checklistTotal) || "—"}</td>
+        <td className="px-2.5 py-1.5">{formatChecklistProgress(issue.checklistDone, issue.checklistTotal) || "—"}</td>
       )}
-      {fields.has("status") && <td className="px-3 py-2">{colName.get(issue.column_id)}</td>}
+      {fields.has("status") && <td className="px-2.5 py-1.5">{colName.get(issue.column_id)}</td>}
       {fields.has("labels") && (
-        <td className="px-3 py-2">{indent ? "—" : issue.labels.map((l) => l.name).join(", ") || "—"}</td>
+        <td className="px-2.5 py-1.5">{indent ? "—" : issue.labels.map((l) => l.name).join(", ") || "—"}</td>
       )}
       {fields.has("cycle") && (
-        <td className="px-3 py-2">{indent ? "—" : issue.cycle_id ? cycleName.get(issue.cycle_id) : "—"}</td>
+        <td className="px-2.5 py-1.5">{indent ? "—" : issue.cycle_id ? cycleName.get(issue.cycle_id) : "—"}</td>
       )}
-      {fields.has("due") && <td className="px-3 py-2">{issue.due_date ?? "—"}</td>}
+      {fields.has("due") && <td className="px-2.5 py-1.5">{issue.due_date ?? "—"}</td>}
     </tr>
   );
 }

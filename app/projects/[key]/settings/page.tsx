@@ -31,11 +31,11 @@ export default async function SettingsPage({
 
   return (
     <ProjectShell email={user.email ?? null} projects={projects} currentKey={key} current={`/projects/${key}/settings`}>
-        <h1 className="page-title">{project.name}</h1>
+        <h1 className="page-title">设置</h1>
         <ErrorBanner message={sp.error} />
 
         <section className="mb-8 panel-raised p-4">
-          <h2 className="mb-3 font-medium">项目</h2>
+          <h2 className="section-head">项目</h2>
           <form action={updateProjectDescriptionAction} className="space-y-3">
             <input type="hidden" name="projectKey" value={key} />
             <Input name="name" defaultValue={project.name} required />
@@ -58,7 +58,7 @@ export default async function SettingsPage({
         </section>
 
         <section className="mb-8 panel-raised p-4">
-          <h2 className="mb-3 font-medium">状态列</h2>
+          <h2 className="section-head">状态列</h2>
           <p className="mb-3 text-sm text-muted-foreground">WIP 只统计顶层 Issue。进入列时若设置了自动指派，会覆盖经办人。</p>
           <ul className="mb-4 space-y-3">
             {board.columns.map((col) => (
@@ -68,11 +68,11 @@ export default async function SettingsPage({
                   <input type="hidden" name="columnId" value={col.id} />
                   <Input name="name" defaultValue={col.name} className="max-w-[10rem]" required />
                   <select name="stateType" defaultValue={col.state_type} className="field-control w-auto">
-                    <option value="backlog">backlog</option>
-                    <option value="unstarted">unstarted</option>
-                    <option value="started">started</option>
-                    <option value="completed">completed</option>
-                    <option value="canceled">canceled</option>
+                    <option value="backlog">待规划</option>
+                    <option value="unstarted">未开始</option>
+                    <option value="started">进行中</option>
+                    <option value="completed">已完成</option>
+                    <option value="canceled">已取消</option>
                   </select>
                   <Input
                     name="wipLimit"
@@ -108,11 +108,11 @@ export default async function SettingsPage({
             <input type="hidden" name="projectKey" value={key} />
             <Input name="name" placeholder="列名" required className="max-w-xs" />
             <select name="stateType" className="field-control w-auto">
-              <option value="backlog">backlog</option>
-              <option value="unstarted">unstarted</option>
-              <option value="started">started</option>
-              <option value="completed">completed</option>
-              <option value="canceled">canceled</option>
+              <option value="backlog">待规划</option>
+              <option value="unstarted">未开始</option>
+              <option value="started">进行中</option>
+              <option value="completed">已完成</option>
+              <option value="canceled">已取消</option>
             </select>
             <Button type="submit" size="sm">
               添加列
@@ -121,7 +121,7 @@ export default async function SettingsPage({
         </section>
 
         <section className="mb-8 panel-raised p-4">
-          <h2 className="mb-3 font-medium">Issue 类型</h2>
+          <h2 className="section-head">Issue 类型</h2>
           <p className="mb-3 text-sm text-muted-foreground">默认 Task / Bug。新建 Issue 使用列表中的第一种类型。</p>
           <ul className="mb-4 space-y-2">
             {board.issueTypes.map((t) => (
@@ -151,7 +151,7 @@ export default async function SettingsPage({
         </section>
 
         <section className="panel-raised p-4">
-          <h2 className="mb-3 font-medium">标签</h2>
+          <h2 className="section-head">标签</h2>
           <ul className="mb-4 space-y-2">
             {board.labels.map((l) => (
               <li key={l.id} className="flex items-center justify-between text-sm">

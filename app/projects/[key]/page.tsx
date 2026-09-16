@@ -1,6 +1,6 @@
 import { ErrorBanner } from "@/components/project-nav";
 import { ProjectShell } from "@/components/project-shell";
-import { IssuePanelHost } from "@/components/issue-panel-host";
+import { IssuePanelHost, toDrawerSnapshot } from "@/components/issue-panel-host";
 import { KanbanBoard } from "@/components/kanban-board";
 import { IssueFilterBar } from "@/components/issue-filter-bar";
 import { applyIssueFilters, parseIssueQuery, searchFromQuery } from "@/lib/saved-views";
@@ -44,7 +44,14 @@ export default async function KanbanPage({
       current={pathname}
       queryString={searchFromQuery(query)}
     >
-        <h1 className="page-title">{project.name}</h1>
+      <IssuePanelHost
+        projectKey={key}
+        pathname={pathname}
+        search={search}
+        error={sp.error}
+        snapshot={toDrawerSnapshot(board, members)}
+      >
+        <h1 className="page-title">看板</h1>
         <ErrorBanner message={sp.error} />
         <IssueFilterBar
           projectKey={key}
@@ -66,14 +73,7 @@ export default async function KanbanPage({
           initiatives={board.initiatives}
           search={search}
         />
-        <IssuePanelHost
-          projectKey={key}
-          projectId={project.id}
-          pathname={pathname}
-          search={search}
-          issue={sp.issue}
-          error={sp.error}
-        />
+      </IssuePanelHost>
     </ProjectShell>
   );
 }

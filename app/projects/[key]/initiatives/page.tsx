@@ -29,7 +29,7 @@ export default async function InitiativesPage({
 
   return (
     <ProjectShell email={user.email ?? null} projects={projects} currentKey={key} current={`/projects/${key}/initiatives`}>
-        <h1 className="page-title">{project.name}</h1>
+        <h1 className="page-title">主题</h1>
         <ErrorBanner message={sp.error} />
         <p className="mb-4 text-sm text-muted-foreground">主题用来归类一批 Issue（类似 Epic）。每个 Issue 最多属于一个主题。</p>
 

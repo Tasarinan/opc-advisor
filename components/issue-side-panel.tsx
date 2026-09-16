@@ -3,6 +3,7 @@ import { IssueFieldsForm } from "@/components/issue-fields-form";
 import { IssuePanelClose } from "@/components/issue-panel-close";
 import { formatIssueKey } from "@/lib/project-key";
 import { loadIssueDetail, loadBoard, listMembers } from "@/lib/queries";
+import { ExternalLink, X } from "lucide-react";
 import Link from "next/link";
 
 export async function IssueSidePanel({
@@ -30,23 +31,30 @@ export async function IssueSidePanel({
   const { issue, labelIds } = detail;
 
   return (
-    <div className="fixed inset-0 z-50">
-      <IssuePanelClose href={closeHref} className="absolute inset-0 bg-foreground/20" aria-label="关闭侧栏" />
-      <aside className="relative z-10 ml-auto h-full w-full max-w-md overflow-y-auto bg-card p-5 shadow-[var(--shadow-soft)]">
-        <div className="mb-3 flex items-start justify-between gap-2">
-          <div>
-            <p className="font-mono text-[11px] text-muted-foreground">{formatIssueKey(projectKey, issue.sequence_number)}</p>
-            <p className="font-medium">{issue.title}</p>
-          </div>
-          <div className="flex gap-2 text-sm">
-            <Link className="link-plain text-sm" href={`/projects/${projectKey}/issues/${issue.sequence_number}`}>
-              完整页
-            </Link>
-            <IssuePanelClose href={closeHref} className="text-sm text-muted-foreground hover:text-foreground">
-              关闭
-            </IssuePanelClose>
-          </div>
+    <>
+      <div className="sticky top-0 z-10 flex items-center justify-between gap-2 border-b border-border bg-card px-4 py-2.5">
+        <p className="truncate font-mono text-[11px] text-muted-foreground">
+          {formatIssueKey(projectKey, issue.sequence_number)}
+        </p>
+        <div className="flex shrink-0 items-center gap-1 text-[13px]">
+          <Link
+            className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-muted-foreground hover:bg-accent hover:text-foreground"
+            href={`/projects/${projectKey}/issues/${issue.sequence_number}`}
+          >
+            <ExternalLink className="size-3.5" aria-hidden />
+            完整页
+          </Link>
+          <IssuePanelClose
+            href={closeHref}
+            className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-muted-foreground hover:bg-accent hover:text-foreground"
+            aria-label="关闭侧栏"
+          >
+            <X className="size-3.5" aria-hidden />
+            关闭
+          </IssuePanelClose>
         </div>
+      </div>
+      <div className="min-h-0 flex-1 overflow-y-auto px-4 py-3">
         <ErrorBanner message={error} />
         <IssueFieldsForm
           projectKey={projectKey}
@@ -61,7 +69,7 @@ export async function IssueSidePanel({
           members={members}
           returnTo={returnTo}
         />
-      </aside>
-    </div>
+      </div>
+    </>
   );
 }
