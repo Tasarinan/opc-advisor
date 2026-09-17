@@ -106,11 +106,15 @@ export function KanbanBoard({
                         pending && dragId === issue.id && "opacity-60",
                       )}
                     >
-                      <IssueOpenLink href={withIssueQuery(search, issue.sequence_number)} className="block" draggable={false}>
-                        <p className="font-mono text-[10px] text-muted-foreground">
-                          {formatIssueKey(project.key, issue.sequence_number)}
-                        </p>
-                        <p className="text-[13px] leading-snug font-medium tracking-tight">{issue.title}</p>
+                      <p className="font-mono text-[10px] text-muted-foreground">
+                        {formatIssueKey(project.key, issue.sequence_number)}
+                      </p>
+                      <IssueOpenLink
+                        href={withIssueQuery(search, issue.sequence_number)}
+                        className="link-plain text-[13px] leading-snug font-medium tracking-tight"
+                        draggable={false}
+                      >
+                        {issue.title}
                       </IssueOpenLink>
                       <div className="mt-1.5 flex flex-wrap gap-1">
                         {typeName ? <span className="meta-chip">{typeName}</span> : null}

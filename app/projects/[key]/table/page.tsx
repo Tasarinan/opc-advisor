@@ -163,10 +163,8 @@ function IssueRow({
   return (
     <tr className={indent ? "border-t border-border/40 bg-muted/40" : "border-t border-border/50"}>
       {fields.has("key") && (
-        <td className="px-2.5 py-1.5 font-mono text-[11px]">
-          <IssueOpenLink className="link-plain" href={href}>
-            {formatIssueKey(keyPrefix, issue.sequence_number)}
-          </IssueOpenLink>
+        <td className="px-2.5 py-1.5 font-mono text-[11px] text-muted-foreground">
+          {formatIssueKey(keyPrefix, issue.sequence_number)}
         </td>
       )}
       {fields.has("title") && (

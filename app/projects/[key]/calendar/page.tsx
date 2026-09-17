@@ -116,13 +116,17 @@ export default async function CalendarPage({
               <div key={idx} className="min-h-24 rounded-lg bg-card p-1.5">
                 {day && <div className="text-xs text-muted-foreground">{day}</div>}
                 {dayIssues.map((issue) => (
-                  <IssueOpenLink
-                    key={issue.id}
-                    href={withIssueQuery(search, issue.sequence_number)}
-                    className="mt-1 block truncate rounded bg-muted px-1 text-xs"
-                  >
-                    {formatIssueKey(key, issue.sequence_number)} {issue.title}
-                  </IssueOpenLink>
+                  <p key={issue.id} className="mt-1 truncate px-1 text-xs">
+                    <span className="mr-1 font-mono text-muted-foreground">
+                      {formatIssueKey(key, issue.sequence_number)}
+                    </span>
+                    <IssueOpenLink
+                      href={withIssueQuery(search, issue.sequence_number)}
+                      className="link-plain font-medium"
+                    >
+                      {issue.title}
+                    </IssueOpenLink>
+                  </p>
                 ))}
             </div>
           );
